@@ -4,6 +4,8 @@ using System.Reflection.Metadata.Ecma335;
 using Webworks.Context;
 using Webworks.Contracts;
 using Webworks.DTOs;
+using Webworks.DTOs.Repsonses;
+using Webworks.DTOs.Requests;
 
 namespace Webworks.Service
 {
@@ -53,14 +55,20 @@ namespace Webworks.Service
             return posts;
         }
 
-        public async Task<PagedResult<BlogPostDTO>> GetPagedPostsAsync(QueryParameters queryParameters)
+        public async Task<PagedResult<BlogPostDTO>> GetPagedPostsAsync(PagedPostsRequest pagedPostsRequest)
         {
-            
+            var query = context.Posts.Include(p => p.Category).AsQueryable();
+
+            if (pagedPostsRequest.CategoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == pagedPostsRequest.CategoryId.Value);
+            }
+
+
             var totalSize = await context.Posts.CountAsync();
-            var items = await context.Posts
-                .Skip(queryParameters.StartIndex)
-                .Take(queryParameters.PageSize)
-                .Include(p => p.Category)
+            var items = await query
+                .Skip(pagedPostsRequest.StartIndex)
+                .Take(pagedPostsRequest.PageSize)
                 .Select(p => new BlogPostDTO
                 {
                     PostId = p.PostId,
@@ -75,8 +83,8 @@ namespace Webworks.Service
             return new PagedResult<BlogPostDTO>
             {
                 Items = items,
-                PageNumber = queryParameters.PageNumber,
-                RecordNumber = queryParameters.PageSize,
+                PageNumber = pagedPostsRequest.PageNumber,
+                RecordNumber = pagedPostsRequest.PageSize,
                 TotalCount = totalSize
             };
         }
@@ -98,6 +106,29 @@ namespace Webworks.Service
                              }).FirstAsync();
 
             return blogPost;
+        }
+
+        public async Task<List<CategoryDTO>> GetAllCategoriesAsync()
+        {
+            var categories = await context.Categories.Select(c => new CategoryDTO
+            {
+                CategoryId = c.CategoryId,
+                CategoryName = c.CategoryName
+            }).ToListAsync();
+
+            return categories;
+        }
+
+        public async Task<Task> CreateCategory(CreateCategoryRequest createCategory)
+        {
+            var category = new Models.Category
+            {
+                CategoryName = createCategory.CategoryName
+            };
+            context.Categories.Add(category);
+            await context.SaveChangesAsync();
+
+            return Task.CompletedTask;
         }
     }
 }
