@@ -132,7 +132,7 @@ namespace Webworks.Service
                                  CategoryName = category.Name
                              }).FirstAsync();*/
 
-            var post = await context.BlogPosts
+            /*var post = await context.BlogPosts
                 .Include(p => p.Category)
                 .Include(p => p.BlogPostContents)
                     .ThenInclude(c => c.Language)
@@ -146,6 +146,21 @@ namespace Webworks.Service
                         ?? p.BlogPostContents
                             .Where(c => c.Language.LanguageCode == "en")
                             .FirstOrDefault()
+                })
+                .FirstOrDefaultAsync();*/
+
+            var post = await context.BlogPosts
+                .Include(p => p.Category)
+                .Include(p => p.BlogPostContents)
+                    .ThenInclude(c => c.Language)
+                .Where(p => p.Id == postId)
+                .Select(p => new
+                {
+                    Post = p,
+                    Content = p.BlogPostContents
+                        .OrderByDescending(c => c.Language.LanguageCode == languageCode)
+                        .ThenByDescending(c => c.Language.LanguageCode == "en")
+                        .FirstOrDefault()
                 })
                 .FirstOrDefaultAsync();
 
