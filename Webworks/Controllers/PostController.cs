@@ -29,7 +29,7 @@ namespace Webworks.Controllers
         }*/
 
         [HttpGet]
-        public async Task<ActionResult<PagedResult<BlogPostDTO>>> GetPagedPosts([FromQuery] PagedPostsRequest pagedPostsRequest)
+        public async Task<ActionResult<PagedResult<BlogPostExcerptDTO>>> GetPagedPosts([FromQuery] PagedPostsRequest pagedPostsRequest)
         {
             var posts = await blogService.GetPagedPostsAsync(pagedPostsRequest);
             return Ok(posts);

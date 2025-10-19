@@ -8,12 +8,12 @@ public partial class Category
     /// <summary>
     /// Id of category
     /// </summary>
-    public long CategoryId { get; set; }
+    public long Id { get; set; }
 
     /// <summary>
-    /// Category name of post
+    /// Category name
     /// </summary>
-    public string CategoryName { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
-    public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
+    public virtual ICollection<BlogPost> BlogPosts { get; set; } = new List<BlogPost>();
 }
