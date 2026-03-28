@@ -180,6 +180,18 @@ namespace Webworks.Service
             };
         }
 
+        public async Task<Task> CreateBlogPostAsync(CreateBlogPostRequest blogPost)
+        {
+            var post = new Models.BlogPost
+            {
+                CategoryId = blogPost.CategoryId,
+                PublicationDate = blogPost.PublicationDate
+            };
+            context.BlogPosts.Add(post);
+            return Task.CompletedTask;
+
+        }
+
         public async Task<List<CategoryDTO>> GetAllCategoriesAsync()
         {
             var categories = await context.Categories.Select(c => new CategoryDTO

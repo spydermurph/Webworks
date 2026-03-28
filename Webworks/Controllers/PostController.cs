@@ -42,6 +42,13 @@ namespace Webworks.Controllers
             return Ok(posts);
         }
 
+        [HttpPost]
+        public async Task<ActionResult> CreatePost([FromBody] CreateBlogPostRequest blogPost)
+        {
+            await blogService.CreateBlogPostAsync(blogPost);
+            return Ok();
+        }
+
         [HttpGet("categories")]
         public async Task<ActionResult<List<CategoryDTO>>> GetCategories()
         {

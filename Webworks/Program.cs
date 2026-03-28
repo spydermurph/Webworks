@@ -2,17 +2,29 @@ using Microsoft.EntityFrameworkCore;
 using Webworks.Context;
 using Webworks.Contracts;
 using Webworks.Service;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Console.WriteLine("DefaultConnection: " + builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddDbContext<WebworksContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("WebworksContext"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 // Add services to the container.
 
 builder.Services.AddScoped<IBlogService, BlogService>();
+builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -43,6 +55,7 @@ app.UseCors();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

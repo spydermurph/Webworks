@@ -11,5 +11,6 @@ namespace Webworks.Contracts
         public Task<PagedResult<BlogPostExcerptDTO>> GetPagedPostsAsync(PagedPostsRequest pagedPostsRequest);
         public Task <List<CategoryDTO>> GetAllCategoriesAsync();
         public Task<Task> CreateCategory(CreateCategoryRequest createCategory);
+        public Task<Task> CreateBlogPostAsync(CreateBlogPostRequest blogPost);
     }
 }

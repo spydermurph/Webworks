@@ -17,6 +17,10 @@ public partial class BlogPostContent
 
     public string Content { get; set; } = null!;
 
+    public bool? Published { get; set; }
+
+    public DateTime? PublicationDate { get; set; }
+
     public virtual BlogPost BlogPost { get; set; } = null!;
 
     public virtual Language Language { get; set; } = null!;

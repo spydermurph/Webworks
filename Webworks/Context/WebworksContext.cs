@@ -7,10 +7,6 @@ namespace Webworks.Context;
 
 public partial class WebworksContext : DbContext
 {
-    public WebworksContext()
-    {
-    }
-
     public WebworksContext(DbContextOptions<WebworksContext> options)
         : base(options)
     {
@@ -23,10 +19,6 @@ public partial class WebworksContext : DbContext
     public virtual DbSet<Category> Categories { get; set; }
 
     public virtual DbSet<Language> Languages { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=Webworks;Trusted_Connection=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -66,6 +58,10 @@ public partial class WebworksContext : DbContext
                 .HasMaxLength(300)
                 .HasColumnName("excerpt");
             entity.Property(e => e.LanguageId).HasColumnName("language_id");
+            entity.Property(e => e.PublicationDate)
+                .HasColumnType("datetime")
+                .HasColumnName("publication_date");
+            entity.Property(e => e.Published).HasColumnName("published");
             entity.Property(e => e.Title)
                 .HasMaxLength(50)
                 .HasColumnName("title");
